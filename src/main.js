@@ -66,11 +66,59 @@ const cardNumberMask = {
   dispatch: function (appended, dynamicMasked) {
     const number = (dynamicMasked.value + appended).replace(/\D/g, "")
 
-    const foundMask = dynamicMasked.compiledMasks.find(
-      ({ regex }) => number.regex
-    )
+    const foundMask = dynamicMasked.compiledMasks.find(function (item) {
+      return number.match(item.regex)
+    })
     return foundMask
   },
 }
 
-const cardNumberMascked = IMask(cardNumber, cardNumberMasck)
+const cardNumberMascked = IMask(cardNumber, cardNumberMask)
+
+const addButton = document.querySelector("#add-card")
+addButton.addEventListener("click", () => {
+  console.log("teste")
+})
+
+document.querySelector("form").addEventListener("submit", (e) => {
+  e.preventDefault()
+})
+
+let inputText = []
+
+const cardHolder = document.querySelector("#card-holder")
+cardHolder.addEventListener("input", () => {
+  const ccValue = document.querySelector(".cc-holder .value")
+  ccValue.innerText =
+    cardHolder.value.length === 0 ? "NOME DO TÍTULAR" : cardHolder.value
+})
+
+securityMasked.on("accept", () => {
+  updateCode(securityMasked.value)
+})
+
+function updateCode(codeValue) {
+  const ccCodeValue = document.querySelector(".cc-security  .value")
+  ccCodeValue.innerText = codeValue.length === 0 ? "123" : codeValue
+}
+
+cardNumberMascked.on("accept", () => {
+  const cardType = cardNumberMascked.masked.currentMask.cardType
+  setCardFlag(cardType)
+  updateNumber(cardNumberMascked.value)
+})
+
+function updateNumber(numberValue) {
+  const ccNumber = document.querySelector(".cc-number")
+  ccNumber.innerText =
+    numberValue.length === 0 ? "1234 5678 9012 3456" : numberValue
+}
+
+experationMasked.on("accept", () => {
+  updateExperationDate(experationMasked.value)
+})
+
+const updateExperationDate = (dateValue) => {
+  const date = document.querySelector(".cc-expiration .value")
+  date.innerText = dateValue.length === 0 ? "01/32" : dateValue
+}
